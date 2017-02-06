@@ -6,9 +6,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import dataGenerator.Constants;
+
 public class NGL1 {
 
-	public static final int SUPPORT_VALUE = 2; 
 	public static HashMap<String, Integer> permutation(String input, HashMap<String, Integer> firstPassResult){
 		
 		HashMap<String, Integer> twoStringInput = new HashMap<String, Integer>();
@@ -22,7 +23,7 @@ public class NGL1 {
 	    while(iterator.hasNext()){
 	    	
 		       Map.Entry mentry = (Map.Entry)iterator.next();
-		       if((int)mentry.getValue() < SUPPORT_VALUE){
+		       if((int)mentry.getValue() < Constants.SUPPORT_VALUE){
 		    	   belowThreshold = belowThreshold + mentry.getKey();
 		    	   
 		       }
@@ -48,10 +49,16 @@ public class NGL1 {
 		
 		HashMap<Integer, String> basketInputHmap = new HashMap<Integer, String>();
 		basketInputHmap.put(1, "A,B,C");
-		basketInputHmap.put(2, "A,C");
+		basketInputHmap.put(2, "A,C,B,D");
 		basketInputHmap.put(3, "A,D,E");
-		basketInputHmap.put(4, "B,C");
-		
+		basketInputHmap.put(4, "C,A,D");
+		basketInputHmap.put(5, "B,A,D,E");
+	
+		basketInputHmap.put(6, "A,D,C");
+		basketInputHmap.put(7, "A,B,E,D");
+		basketInputHmap.put(8, "A,C,E");
+		basketInputHmap.put(9, "C,B,D");
+		basketInputHmap.put(10, "B,C,D");
 		
 		HashMap<String, Integer> hmapFirstPass = new HashMap<String, Integer>();
 		hmapFirstPass.put("A", 0);

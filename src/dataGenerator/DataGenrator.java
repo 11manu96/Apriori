@@ -50,7 +50,7 @@ public class DataGenrator {
 		//creating a writer for inputting to the file
 	    BufferedWriter writer = null;
 		try {
-			writer = new BufferedWriter(new FileWriter(new File("stasticalInput.txt")));
+			writer = new BufferedWriter(new FileWriter(new File(Constants.FILENAME)));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -60,7 +60,7 @@ public class DataGenrator {
 		
 		while( (Constants.NO_OF_ELEMENTS - totaltElemetnsAdded) >= 5){
 			
-			int itemSetRandomSize = (int )(5 + Math.random()*3 );
+			int itemSetRandomSize = (int )(5 + Math.random() * 4 );
 
 			String itemSet = "";
 						

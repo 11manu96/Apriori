@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,36 +12,40 @@ import java.util.Set;
 
 import dataGenerator.Constants;
 
+
+
+
+
 public class NGL1 {
 
-	public static HashMap<String, Integer> permutation(String input, HashMap<String, Integer> firstPassResult){
+	public static HashMap<String, Integer> permutation(HashMap<String, Integer> firstPassResult){
 		
 		HashMap<String, Integer> twoStringInput = new HashMap<String, Integer>();
 		String belowThreshold = "";
 		
+		//checking for below threshold before generating 2 - item itemsets
+		for(String s : Constants.elementArray){
+			
+			
+
+			if(firstPassResult.get(s) > Constants.SUPPORT_VALUE){
+				//System.out.println(firstPassResult.get(s));
+				belowThreshold += s;
+			}
+		}
 		
-		//checking for apriori principle basically
-		Set set = firstPassResult.entrySet();
-	    Iterator iterator = set.iterator();
-	    
-	    while(iterator.hasNext()){
-	    	
-		       Map.Entry mentry = (Map.Entry)iterator.next();
-		       if((int)mentry.getValue() < Constants.SUPPORT_VALUE){
-		    	   belowThreshold = belowThreshold + mentry.getKey();
-		    	   
-		       }
-	    }
+		
+		
+
+	 
 	    System.out.println(belowThreshold + "");
 		
 		
-		for(int i = 0; i < input.length(); i++){
-    		for(int j = i+1; j < input.length(); j++){
+		for(int i = 0; i < belowThreshold.length(); i++){
+    		for(int j = i+1; j < belowThreshold.length(); j++){
     			//System.out.println(input.charAt(i)+ "" + input.charAt(j));
-    			if(!belowThreshold.contains(""+input.charAt(i)) && !belowThreshold.contains(""+input.charAt(j))){
-    				twoStringInput.put(input.charAt(i)+ "" + input.charAt(j), 0);
+    				twoStringInput.put(belowThreshold.charAt(i)+ "" + belowThreshold.charAt(j), 0);
     		
-    			}
     		}
     	}
 		
@@ -45,7 +53,15 @@ public class NGL1 {
 		return twoStringInput;
 		
 	}
+	
+	
 	public static void main(String args[]) {
+		
+		BufferedReader br = null;
+		FileReader fr = null;
+		
+		String[] firstPassArray = Constants.elementArray;
+
 		
 		HashMap<Integer, String> basketInputHmap = new HashMap<Integer, String>();
 		basketInputHmap.put(1, "A,B,C");
@@ -60,79 +76,122 @@ public class NGL1 {
 		basketInputHmap.put(9, "C,B,D");
 		basketInputHmap.put(10, "B,C,D");
 		
-		HashMap<String, Integer> hmapFirstPass = new HashMap<String, Integer>();
-		hmapFirstPass.put("A", 0);
-		hmapFirstPass.put("B", 0);
-		hmapFirstPass.put("C", 0);
-		hmapFirstPass.put("D", 0);
-		hmapFirstPass.put("E", 0);
+	HashMap<String, Integer> hmapFirstPass = new HashMap<String, Integer>();
+		for(int i = 0; i < firstPassArray.length; i++){
+			hmapFirstPass.put(firstPassArray[i], 0);
+		}
 		
 		
-		//checking for occurnaces of a,b,c,d,e first pass
-		Set set = basketInputHmap.entrySet();
-	    Iterator iterator = set.iterator();
-	    while(iterator.hasNext()) {
-	    	
-	       Map.Entry mentry = (Map.Entry)iterator.next();
-	       
-	       System.out.print("<"+ mentry.getKey() + ", {");
-	       System.out.println(mentry.getValue() + "}>");
-	       
-	       if(mentry.getValue().toString().contains("A")){
-	   			hmapFirstPass.put("A", hmapFirstPass.get("A") + 1);
-	       } 
-	       if(mentry.getValue().toString().contains("B")){
-	   			hmapFirstPass.put("B", hmapFirstPass.get("B") + 1);
-	       }
-	       if(mentry.getValue().toString().contains("C")){
-	   			hmapFirstPass.put("C", hmapFirstPass.get("C") + 1);
-	       }
-	       if(mentry.getValue().toString().contains("D")){
-	   			hmapFirstPass.put("D", hmapFirstPass.get("D") + 1);
-	       }
-	       if(mentry.getValue().toString().contains("E")){
-	   			hmapFirstPass.put("E", hmapFirstPass.get("E") + 1);
-	       }
-	    }
+		//checking for occurnaces of a,b,c,d,e,f,g,h,i,j first pass
+		//Set set = basketInputHmap.entrySet();
+	    //Iterator iterator = set.iterator();
+	    
+		try {
+			fr = new FileReader(Constants.FILENAME);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		br = new BufferedReader(fr);
+
+		String transactionString;
+		
+		int noOfTransactions = 0;
+		
+		
+	    
+	    try {
+			while((transactionString = br.readLine()) != null && noOfTransactions < Constants.NO_OF_ITEM_SETS) {
+				
+				noOfTransactions++;
+			   
+			   System.out.print("<"+noOfTransactions + ", {");
+			   System.out.println(transactionString + "}>");
+			   
+			   
+			   for(int i = 0; i < firstPassArray.length; i++){
+				   
+				   if(transactionString.contains(firstPassArray[i]) ){
+
+						hmapFirstPass.put(firstPassArray[i], hmapFirstPass.get(firstPassArray[i]) + 1);
+						
+				   } 
+				   
+			   }
+			  
+			   
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    
 	    
 	   System.out.println("After First Pass" + hmapFirstPass);
 	   
-	   HashMap<String, Integer> secondPassMap = permutation("ABCDE", hmapFirstPass);
-	   //System.out.println(secondPassMap);
+	   
+	   
+	   HashMap<String, Integer> secondPassMap = permutation(hmapFirstPass);
+	   supportValueSecondPass(secondPassMap);
+	   System.out.println(secondPassMap);
 
-	   set = basketInputHmap.entrySet();
-	   iterator = set.iterator();
-	   
-	   while(iterator.hasNext()){
-	       Map.Entry mentry = (Map.Entry)iterator.next();
-	       
-	       Set twoItemsetSet = secondPassMap.entrySet();
-	       Iterator twoItemsetIetrator = twoItemsetSet.iterator();
-	       
-	       while(twoItemsetIetrator.hasNext()){
-	    	   Map.Entry twoItemsetEntry = (Map.Entry) twoItemsetIetrator.next();
-	    	   
-		       if(mentry.getValue().toString().contains(""+twoItemsetEntry.getKey().toString().charAt(0))
-		    		   && mentry.getValue().toString().contains(""+twoItemsetEntry.getKey().toString().charAt(1))){
-		    	   
-		    	   secondPassMap.put((String) twoItemsetEntry.getKey(), (int)twoItemsetEntry.getValue()+1);
-		       }
-
-	       }
-		   
-	   }
-	   
-	   System.out.println("After Second Pass" + secondPassMap);
-
-	   
-	   
-		//Integer var= hmap.get("E");
-	      //System.out.println("Value at index 2 is: "+var);
+	  
+	  
 		
 
 	
 	}
-    
+	
+	
+	public static void supportValueSecondPass(HashMap<String, Integer> secondPassMap){
+		BufferedReader br = null;
+		FileReader fr = null;
+		 
+		
+		try {
+				fr = new FileReader(Constants.FILENAME);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			br = new BufferedReader(fr);
+
+			String transactionString;
+			
+			int noOfTransactions = 0;
+		    try {
+
+		    	while((transactionString = br.readLine()) != null && noOfTransactions < Constants.NO_OF_ITEM_SETS){
+					   
+		    			
+		    		   noOfTransactions++;
+				       Set twoItemsetSet = secondPassMap.entrySet();
+				       Iterator twoItemsetIetrator = twoItemsetSet.iterator();
+				       
+				       while(twoItemsetIetrator.hasNext()){
+				    	   Map.Entry twoItemsetEntry = (Map.Entry) twoItemsetIetrator.next();
+				    	   
+					       if(transactionString.contains(""+twoItemsetEntry.getKey().toString().charAt(0))
+					    		   && transactionString.contains(""+twoItemsetEntry.getKey().toString().charAt(1))){
+					    	   
+					    	   secondPassMap.put((String) twoItemsetEntry.getKey(), (int)twoItemsetEntry.getValue()+1);
+					       }
+
+				       }
+					   
+				}
+		    } catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			   
+		   
+		   System.out.println("After Second Pass" + secondPassMap);
+
+		   
+		   
+			//Integer var= hmap.get("E");
+		      //System.out.println("Value at index 2 is: "+var); 
+	}
 
 }

@@ -1,12 +1,12 @@
 # Data-Mining-and-Warehousing
 
-NAME
+#NAME
      Apriori -- runs Apriori Algorith on stastical Data sets
 
-SYNOPSIS
+#SYNOPSIS
      ls [-v][-s1s2n]
 
-DESCRIPTION
+#DESCRIPTION
      For the Support Threshold (s1: for pass 1  and s2: for pass 2), number of transactions entered by the user, the algorithm outputs 1,2 degree item sets which pass the support value, it also outputs the confidence value for the itemsets passing the support value.
 
 
@@ -21,3 +21,10 @@ DESCRIPTION
      -n      Set the number of Transactions on which the algorithm should run on.
 
      -f      Speficiy the file you want the algorithm to run on
+
+
+     #To run the code:
+     download github project
+     navigate to folder haveing Apriori.java.
+     execute command javac Apriori.java
+     after compilation, execute command java Apriori [-v] [-s1s2fn]

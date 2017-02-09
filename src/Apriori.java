@@ -16,7 +16,12 @@ import dataGenerator.Constants;
 
 
 
-public class NGL1 {
+public class Apriori {
+	
+	private static boolean mVerboseMode = false;
+	private static int mSupportThresholdFirstPass = Constants.SUPPORT_THRESHOLD_FIRST_PASS;
+	private static int mNoOfTransactions = Constants.NO_OF_ITEM_SETS;
+	private static int mSupportThresholdSecondPass = Constants.SUPPORT_THRESHOLD_SECOND_PASS;
 
 	public static HashMap<String, Integer> permutation(HashMap<String, Integer> firstPassResult){
 		
@@ -28,7 +33,7 @@ public class NGL1 {
 			
 			
 
-			if(firstPassResult.get(s) > Constants.SUPPORT_VALUE){
+			if(firstPassResult.get(s) > mSupportThresholdFirstPass){
 				//System.out.println(firstPassResult.get(s));
 				belowThreshold += s;
 			}
@@ -37,7 +42,7 @@ public class NGL1 {
 		
 		
 
-	 
+		System.out.print("Items Passing the First Pass : ");
 	    System.out.println(belowThreshold + "");
 		
 		
@@ -57,24 +62,43 @@ public class NGL1 {
 	
 	public static void main(String args[]) {
 		
+		
+		if(args.length != 0){
+			
+			if(args[0].equals("-v")){
+				System.out.println("running in verbose mode");
+				mVerboseMode = true;
+			}
+			
+			for(int i=0;i<args.length;i++)  {
+				//System.out.println(":"+args[i] + ":"); 
+				
+				if(args[i].equals("-n")){
+					mNoOfTransactions = Integer.parseInt(args[i+1]);
+				}else if(args[i].equals("-s1")){
+					mSupportThresholdFirstPass = Integer.parseInt(args[i+1]);
+				}else if(args[i].equals("-s2")){
+					mSupportThresholdSecondPass = Integer.parseInt(args[i+1]);
+				}
+				  
+			}  
+		}
+		
+		System.out.println("APRIORI ALGORITHM...");
+		System.out.println("The Algorith is running on "+ mNoOfTransactions + " transactions");
+		System.out.println("The support threshold for the first pass is " + mSupportThresholdFirstPass);
+		System.out.println("The support threshold for the second pass is "+ mSupportThresholdSecondPass);
+		
+		
+		
+	
+		
 		BufferedReader br = null;
 		FileReader fr = null;
 		
 		String[] firstPassArray = Constants.elementArray;
 
-		
-		HashMap<Integer, String> basketInputHmap = new HashMap<Integer, String>();
-		basketInputHmap.put(1, "A,B,C");
-		basketInputHmap.put(2, "A,C,B,D");
-		basketInputHmap.put(3, "A,D,E");
-		basketInputHmap.put(4, "C,A,D");
-		basketInputHmap.put(5, "B,A,D,E");
 	
-		basketInputHmap.put(6, "A,D,C");
-		basketInputHmap.put(7, "A,B,E,D");
-		basketInputHmap.put(8, "A,C,E");
-		basketInputHmap.put(9, "C,B,D");
-		basketInputHmap.put(10, "B,C,D");
 		
 	HashMap<String, Integer> hmapFirstPass = new HashMap<String, Integer>();
 		for(int i = 0; i < firstPassArray.length; i++){
@@ -82,9 +106,7 @@ public class NGL1 {
 		}
 		
 		
-		//checking for occurnaces of a,b,c,d,e,f,g,h,i,j first pass
-		//Set set = basketInputHmap.entrySet();
-	    //Iterator iterator = set.iterator();
+	
 	    
 		try {
 			fr = new FileReader(Constants.FILENAME);
@@ -101,12 +123,19 @@ public class NGL1 {
 		
 	    
 	    try {
-			while((transactionString = br.readLine()) != null && noOfTransactions < Constants.NO_OF_ITEM_SETS) {
+	    	
+	    	if(mVerboseMode)
+				System.out.println("Transactions Being Used are : ");
+
+			while((transactionString = br.readLine()) != null && noOfTransactions < mNoOfTransactions) {
 				
 				noOfTransactions++;
 			   
-			   System.out.print("<"+noOfTransactions + ", {");
-			   System.out.println(transactionString + "}>");
+				if(mVerboseMode){
+					System.out.print("<"+noOfTransactions + ", {");
+					   System.out.println(transactionString + "}>");
+				}
+			   
 			   
 			   
 			   for(int i = 0; i < firstPassArray.length; i++){
@@ -126,15 +155,15 @@ public class NGL1 {
 			e.printStackTrace();
 		}
 	    
-	    
-	   System.out.println("After First Pass" + hmapFirstPass);
+	   if(mVerboseMode) 
+		   System.out.println("confidence value after First Pass" + hmapFirstPass);
 	   
 	   
 	   
 	   HashMap<String, Integer> secondPassMap = permutation(hmapFirstPass);
 	   supportValueSecondPass(secondPassMap);
-	   System.out.println(secondPassMap);
 
+	   
 	  
 	  
 		
@@ -161,7 +190,7 @@ public class NGL1 {
 			int noOfTransactions = 0;
 		    try {
 
-		    	while((transactionString = br.readLine()) != null && noOfTransactions < Constants.NO_OF_ITEM_SETS){
+		    	while((transactionString = br.readLine()) != null && noOfTransactions < mNoOfTransactions){
 					   
 		    			
 		    		   noOfTransactions++;
@@ -185,8 +214,24 @@ public class NGL1 {
 				e.printStackTrace();
 			}
 			   
+		    Set twoItemsetSet = secondPassMap.entrySet();
+		    Iterator twoItemsetSetIterator = twoItemsetSet.iterator();
+		    
+		    if(mVerboseMode)
+		    	System.out.println("confidence values after Second Pass" + secondPassMap);
+
+		    System.out.println("2 item Item Set passing the support threshold : ");
+		    while(twoItemsetSetIterator.hasNext()){
+		    	
+		    	Map.Entry  mapTuple = (Map.Entry) twoItemsetSetIterator.next();
+		    	if((Integer)mapTuple.getValue() >= mSupportThresholdSecondPass){
+		    		
+		    		System.out.println(mapTuple.getKey() + " : " + mapTuple.getValue());
+		    	}
+		    }
 		   
-		   System.out.println("After Second Pass" + secondPassMap);
+		   
+		  
 
 		   
 		   

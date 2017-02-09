@@ -43,6 +43,9 @@ public class DataGenrator {
 	
 	public static void generateStatisticalDataSet(HashMap<String,Integer> frequencyMap){
 		
+		
+		
+		
 		//counter to check the total number of items used
 		int totaltElemetnsAdded = 0;
 		int itemSetCount = 0;

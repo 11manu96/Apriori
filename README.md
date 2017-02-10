@@ -12,15 +12,15 @@
 
      The following options are available:
 
-     -v      Run in Debug Mode. Usage : java Apriori -v [-s1s2nf]
+     **-v**      Run in Debug Mode. Usage : java Apriori -v [-s1s2nf]
 
-     -s1     Set Support threshold for first pass. i.e. support pass for 1 - item itemsets.
+     **-s1**     Set Support threshold for first pass. i.e. support pass for 1 - item itemsets.
 
-     -s2     Set Support threshold for Second pass. i.e. support pass for 2 - item itemsets.
+     **-s2**     Set Support threshold for Second pass. i.e. support pass for 2 - item itemsets.
 
-     -n      Set the number of Transactions on which the algorithm should run on.
+     **-n**      Set the number of Transactions on which the algorithm should run on.
 
-     -f      Speficiy the file you want the algorithm to run on
+     **-f**      Speficiy the file you want the algorithm to run on
 
 
      #To run the code:
